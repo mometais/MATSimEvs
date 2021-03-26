@@ -31,6 +31,7 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.controler.Injector;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -39,7 +40,7 @@ import org.matsim.core.scenario.ScenarioUtils;
  * @author nagel
  *
  */
-public class RunMatsim{
+public class RunWithEvs {
 
 	public static void main(String[] args) {
 		String configFile = "scenarios/equil/config.xml";
@@ -71,12 +72,17 @@ public class RunMatsim{
 					protected void configureQSim() {
 						bind(VehicleChargingHandler.class).asEagerSingleton();
 						bind(MobsimScopeEventHandler.class).to(VehicleChargingHandler.class);
-					};
+					}
 				});
-			};
+			}
 		};
 		controler.addOverridingModule(abstractModule);
 		controler.configureQSimComponents(components -> components.addNamedComponent(EvModule.EV_COMPONENT));
+
+
+
+
+
 
 
 		

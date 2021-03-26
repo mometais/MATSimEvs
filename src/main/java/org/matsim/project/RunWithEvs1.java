@@ -34,19 +34,17 @@ import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.scenario.ScenarioUtils;
 
-public class RunWithEvs3 {
+public class RunWithEvs1 {
     public static void main(String[] args) {
-        //config générale
+        //basic config
         String configFile = "scenarios/equil/config.xml";
         Config config = ConfigUtils.loadConfig(configFile);
-        config.controler().setOutputDirectory("RunWithEvs3");
+        config.controler().setOutputDirectory("RunWithEvs1");
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
         config.controler().setLastIteration(0);
 
-        //ajout du configGroup EV
+        //adding EV config group to config -> ok
         EvConfigGroup evConfigGroup = new EvConfigGroup();
-//        evConfigGroup.setVehiclesFile("../../testEvs/additional_input_testEvs/evs.xml");
-//        evConfigGroup.setChargersFile("../../testEvs/additional_input_testEvs/chargers.xml");
         evConfigGroup.setVehiclesFile("../../scenarios/equil/evs.xml");
         evConfigGroup.setChargersFile("../../scenarios/equil/chargers.xml");
         config.addModule(evConfigGroup);
@@ -55,15 +53,19 @@ public class RunWithEvs3 {
 
         Controler controler = new Controler(scenario);
 
+        //need instances of following to solve binding problems
         EventsManager eventsManager = EventsUtils.createEventsManager();
         Network network = scenario.getNetwork();
 
 
 
+        //Adding new ev module to the controler -> seems to work
+        //Cannot just do "controler.addOverridinModule(new EvModule())" because of
+        //binding problems with the injector
         EvModule evModule = new EvModule(){
             @Override
             public void install(){
-                //éléments d'origine
+                //default bindings for ev module
                 this.bind(MobsimScopeEventHandling.class).asEagerSingleton();
                 this.addControlerListenerBinding().to(MobsimScopeEventHandling.class);
                 this.install(new ElectricFleetModule());
@@ -72,16 +74,17 @@ public class RunWithEvs3 {
                 this.install(new DischargingModule());
                 this.install(new EvStatsModule());
 
-                //éléments manquants d'après les erreurs renvoyées
+                //missing bindings according to java errors
                 this.bind(EventsManager.class).toInstance(eventsManager);
                 this.bind(Network.class).toInstance(network);
-//                this.bind(ElectricFleet.class); //normalement on a install(ElectricFleetModule) donc on devrait pas avoir à faire ça
+//                this.bind(ElectricFleet.class).to??? // problem here
+//                when running, error "No implementation for ElectricFleet was bound", but bound to what ?
             }
         };
         controler.addOverridingModule(evModule);
 
 
-
+        // abstract module from the EV module code example, seems necessary to run
         AbstractModule abstractModule = new AbstractModule() {
             @Override
             public void install() {
@@ -94,23 +97,24 @@ public class RunWithEvs3 {
                     }
                 });
 
-//                this.install(new EvModule());
+//                this.install(new EvModule()); //tried to install ev module here, failed
 //                this.bind(EvModule.class);
 
             }
         };
         controler.addOverridingModule(abstractModule);
-
         controler.configureQSimComponents(components -> components.addNamedComponent(EvModule.EV_COMPONENT));
 
-        com.google.inject.Injector injector = Injector.createInjector(config, evModule);
 
+        //Try to make an injector to have access to the EV fleet in the simulation
+        //The simulation perfectly runs without the two following lines
+        com.google.inject.Injector injector = Injector.createInjector(config, evModule);
         ElectricFleet electricFleet = injector.getInstance(ElectricFleet.class);
 
         controler.run();
 
-//
-//        eventsManager.addHandler(new MyHandler());
+        //event manager to get EVs SoC
+//        eventsManager.addHandler(new MyHandler(electricFleet));
 //        eventsManager.initProcessing();
 //        new MatsimEventsReader(eventsManager).readFile("RunWithEvs3/output_events.xml.gz");
 

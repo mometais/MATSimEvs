@@ -6,13 +6,17 @@ import java.net.URL;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.events.VehicleLeavesTrafficEvent;
+import org.matsim.api.core.v01.events.handler.VehicleLeavesTrafficEventHandler;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
 import org.matsim.contrib.ev.MobsimScopeEventHandler;
 import org.matsim.contrib.ev.charging.VehicleChargingHandler;
 import org.matsim.contrib.ev.fleet.ElectricFleet;
+import org.matsim.contrib.ev.fleet.ElectricVehicle;
 import org.matsim.contrib.ev.routing.EvNetworkRoutingProvider;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -22,7 +26,7 @@ import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.scenario.ScenarioUtils;
 
-public class RunEvExample {
+public class TestWithExample {
     //Original EV run from matsim contribs
 
 
@@ -57,7 +61,9 @@ public class RunEvExample {
         Scenario scenario = ScenarioUtils.loadScenario(config);
         Controler controler = new Controler(scenario);
 
-        controler.addOverridingModule(new EvModule());
+
+        EvModule evModule = new EvModule();
+        controler.addOverridingModule(evModule );
         controler.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
@@ -72,8 +78,29 @@ public class RunEvExample {
             }
         });
         controler.configureQSimComponents(components -> components.addNamedComponent(EvModule.EV_COMPONENT));
+        com.google.inject.Injector injector = org.matsim.core.controler.Injector.createInjector(config, evModule);
+        ElectricFleet electricFleet = injector.getInstance(ElectricFleet.class);
 
 
         controler.run();
     }
+
+    private class EvHandler implements VehicleLeavesTrafficEventHandler{
+        private final ElectricFleet electricFleet;
+
+        @Inject
+        public EvHandler(ElectricFleet electricFleet){
+            this.electricFleet = electricFleet;
+        }
+
+        @Override
+        public void handleEvent(VehicleLeavesTrafficEvent vehicleLeavesTrafficEvent) {
+            Id<ElectricVehicle> evId = Id.create(vehicleLeavesTrafficEvent.getVehicleId(),ElectricVehicle.class);
+            if(electricFleet.getElectricVehicles().get(evId) != null){
+                Double soc = electricFleet.getElectricVehicles().get(evId).getBattery().getSoc();
+                System.out.println("vehicle" + evId.toString() + "stops with a SoC of " + soc);
+            }
+        }
+    }
 }
+
