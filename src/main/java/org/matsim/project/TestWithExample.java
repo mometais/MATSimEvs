@@ -18,11 +18,14 @@ import org.matsim.contrib.ev.charging.VehicleChargingHandler;
 import org.matsim.contrib.ev.fleet.ElectricFleet;
 import org.matsim.contrib.ev.fleet.ElectricVehicle;
 import org.matsim.contrib.ev.routing.EvNetworkRoutingProvider;
+import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
+import org.matsim.core.events.EventsUtils;
+import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.scenario.ScenarioUtils;
 
@@ -50,12 +53,13 @@ public class TestWithExample {
                         + DEFAULT_CONFIG_FILE);
             }
         }
-        new org.matsim.contrib.ev.example.RunEvExample().run(configUrl);
+        new TestWithExample().run(configUrl);
     }
 
     public void run(URL configUrl) {
         Config config = ConfigUtils.loadConfig(configUrl, new EvConfigGroup());
 
+        config.controler().setOutputDirectory("output_TestWithExample");
         config.controler()
                 .setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
         Scenario scenario = ScenarioUtils.loadScenario(config);
@@ -83,6 +87,13 @@ public class TestWithExample {
 
 
         controler.run();
+
+        EventsManager eventsManager = EventsUtils.createEventsManager();
+        eventsManager.addHandler(new EvHandler(electricFleet));
+        eventsManager.initProcessing();
+        new MatsimEventsReader(eventsManager).readFile("output_TestWithExample/output_events.xml.gz");
+
+
     }
 
     private class EvHandler implements VehicleLeavesTrafficEventHandler{
@@ -95,6 +106,7 @@ public class TestWithExample {
 
         @Override
         public void handleEvent(VehicleLeavesTrafficEvent vehicleLeavesTrafficEvent) {
+            System.out.println("vehicle" + vehicleLeavesTrafficEvent.getVehicleId().toString() + "stops");
             Id<ElectricVehicle> evId = Id.create(vehicleLeavesTrafficEvent.getVehicleId(),ElectricVehicle.class);
             if(electricFleet.getElectricVehicles().get(evId) != null){
                 Double soc = electricFleet.getElectricVehicles().get(evId).getBattery().getSoc();

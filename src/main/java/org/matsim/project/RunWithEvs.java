@@ -79,12 +79,6 @@ public class RunWithEvs {
 		controler.addOverridingModule(abstractModule);
 		controler.configureQSimComponents(components -> components.addNamedComponent(EvModule.EV_COMPONENT));
 
-
-
-
-
-
-
 		
 
 		
