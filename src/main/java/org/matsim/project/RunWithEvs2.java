@@ -18,6 +18,7 @@
  * *********************************************************************** */
 package org.matsim.project;
 
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
@@ -27,13 +28,14 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
+import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.scenario.ScenarioUtils;
 
 /**
  * @author nagel
  *
  */
-public class RunWithEvs {
+public class RunWithEvs2 {
 
 	public static void main(String[] args) {
 		String configFile = "scenarios/equil/config.xml";
@@ -41,14 +43,19 @@ public class RunWithEvs {
 
 		config.controler().setOutputDirectory("output");
 		config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
-		config.controler().setLastIteration(0);
+		config.controler().setLastIteration(1);
 
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
 		evConfigGroup.setChargersFile("../../scenarios/equil/chargers.xml");
 		evConfigGroup.setVehiclesFile("../../scenarios/equil/evs.xml");
 		config.addModule(evConfigGroup);
 
-		Scenario scenario = ScenarioUtils.loadScenario(config) ;
+		Scenario scenario = ScenarioUtils.loadScenario(config);
+
+		//reduction of the number of agents in the simulation
+		for(int i = 11; i<=100; i++){
+			scenario.getPopulation().removePerson(Id.createPersonId(i));
+		}
 
 		Controler controler = new Controler( scenario ) ;
 
@@ -59,7 +66,8 @@ public class RunWithEvs {
 		controler.addOverridingQSimModule(new AbstractQSimModule() {
 			@Override
 			protected void configureQSim() {
-				addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
+//				addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
+				addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
 			}
 		});
 		
