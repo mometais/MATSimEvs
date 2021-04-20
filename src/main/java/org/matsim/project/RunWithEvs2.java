@@ -43,21 +43,32 @@ public class RunWithEvs2 {
 
 		config.controler().setOutputDirectory("output");
 		config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
-		config.controler().setLastIteration(1);
+		config.controler().setLastIteration(5);
+
 
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
 		evConfigGroup.setChargersFile("../../scenarios/equil/chargers.xml");
 		evConfigGroup.setVehiclesFile("../../scenarios/equil/evs.xml");
+		evConfigGroup.setTimeProfiles(true);
 		config.addModule(evConfigGroup);
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
-		//reduction of the number of agents in the simulation
-		for(int i = 11; i<=100; i++){
+
+//		//reduction of the number of agents in the simulation
+		for(int i = 3; i<=100; i++){
 			scenario.getPopulation().removePerson(Id.createPersonId(i));
 		}
 
 		Controler controler = new Controler( scenario ) ;
+
+		//Scoring function for EV charging
+		controler.addOverridingModule(new AbstractModule() {
+			@Override
+			public void install() {
+				this.bindScoringFunctionFactory().toInstance(new EVChargingScoringFunctionFactory(scenario));
+			}
+		});
 
 		EvModule evModule = new EvModule();
 		controler.addOverridingModule(evModule);
@@ -67,11 +78,15 @@ public class RunWithEvs2 {
 			@Override
 			protected void configureQSim() {
 //				addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
-				addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
+				if (controler.getIterationNumber() == config.controler().getLastIteration()){
+					addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
+				}
+
 			}
 		});
 		
 		controler.run();
+		ElectricHandlerWithFileWriter.fileWriter("output");
 	}
 	
 }

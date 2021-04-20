@@ -7,10 +7,15 @@ import org.matsim.api.core.v01.events.VehicleLeavesTrafficEvent;
 import org.matsim.api.core.v01.events.handler.VehicleEntersTrafficEventHandler;
 import org.matsim.api.core.v01.events.handler.VehicleLeavesTrafficEventHandler;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.contrib.ev.charging.ChargingStartEvent;
+import org.matsim.contrib.ev.charging.ChargingStartEventHandler;
 import org.matsim.contrib.ev.fleet.ElectricFleet;
 import org.matsim.contrib.ev.fleet.ElectricVehicle;
+import org.matsim.contrib.util.CSVLineBuilder;
+import org.matsim.contrib.util.CompactCSVWriter;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.events.MobsimScopeEventHandler;
+import org.matsim.core.utils.io.IOUtils;
 import org.matsim.vehicles.Vehicle;
 
 import java.util.ArrayList;
@@ -18,7 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ElectricHandlerWithFileWriter
-        implements VehicleLeavesTrafficEventHandler, VehicleEntersTrafficEventHandler, MobsimScopeEventHandler{
+        implements VehicleLeavesTrafficEventHandler, VehicleEntersTrafficEventHandler, ChargingStartEventHandler, MobsimScopeEventHandler{
+
+    // WARNING !!! When adding this handler in QSim, add it only on the last iteration
 
     @Inject
     public ElectricFleet electricFleet;
@@ -81,6 +88,10 @@ public class ElectricHandlerWithFileWriter
 
     }
 
+    public void handleEvent(ChargingStartEvent event){
+        System.err.println("\"#########\\n#########\\n#########\\n vehicle charging \\n#########\\n#########\\n#########\"");
+    }
+
     @Override
     public void handleEvent(VehicleEntersTrafficEvent vehicleEntersTrafficEvent) {
         Id<Vehicle> vehicleId = vehicleEntersTrafficEvent.getVehicleId();
@@ -102,5 +113,44 @@ public class ElectricHandlerWithFileWriter
         } else {
             System.err.println("First entry in traffic for vehicle "+ vehicleId);
         }
+    }
+
+    public static void fileWriter(String directory){
+        String parkingDuration = "parking_duration_by_locations.csv";
+        String soc = "soc_by_locations.csv";
+        String stopCount = "parking_events_by_location.csv";
+
+        System.err.println("#########\n#########\n#########\n fileWriter called \n#########\n#########\n#########");
+//        System.err.println(parkingDurationMap.toString());
+
+        CompactCSVWriter writerParkingDuration = new CompactCSVWriter(IOUtils.getBufferedWriter(parkingDuration));
+        writerParkingDuration.writeNext("locationID[duration1, duration2, ...]");
+        for(Map.Entry mapentry : parkingDurationMap.entrySet()){
+            CSVLineBuilder builder = (new CSVLineBuilder()).add(mapentry.getKey().toString() + mapentry.getValue().toString());
+            writerParkingDuration.writeNext(builder);
+        }
+        writerParkingDuration.close();
+
+        CompactCSVWriter writerSoc = new CompactCSVWriter(IOUtils.getBufferedWriter(soc));
+        writerSoc.writeNext("locationID[soc1, soc2, ...]");
+        for(Map.Entry mapentry : socMap.entrySet()){
+            CSVLineBuilder builder = (new CSVLineBuilder()).add(mapentry.getKey().toString() + mapentry.getValue().toString());
+            writerSoc.writeNext(builder);
+        }
+        writerSoc.close();
+
+        CompactCSVWriter writerStopCounter = new CompactCSVWriter(IOUtils.getBufferedWriter(stopCount));
+        writerStopCounter.writeNext("locationID{idVehicle1=stopNumber, idVehicle2=stopNumber,...}");
+        for(Map.Entry mapentry : stopCounterMap.entrySet()){
+            CSVLineBuilder builder = (new CSVLineBuilder()).add(mapentry.getKey().toString() + mapentry.getValue().toString());
+            writerStopCounter.writeNext(builder);
+        }
+        writerStopCounter.close();
+
+
+
+
+
+
     }
 }
