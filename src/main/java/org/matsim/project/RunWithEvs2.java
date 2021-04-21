@@ -20,8 +20,11 @@ package org.matsim.project;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
+import org.matsim.contrib.ev.charging.VehicleChargingHandler;
+import org.matsim.contrib.ev.routing.EvNetworkRoutingProvider;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
@@ -44,7 +47,7 @@ public class RunWithEvs2 {
 		String outputDirectory = "output";
 		config.controler().setOutputDirectory(outputDirectory);
 		config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
-		config.controler().setLastIteration(5);
+		config.controler().setLastIteration(20);
 
 
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
@@ -56,9 +59,9 @@ public class RunWithEvs2 {
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
 		//reduction of the number of agents in the simulation (to go faster in the tests)
-		for(int i = 3; i<=100; i++){
-			scenario.getPopulation().removePerson(Id.createPersonId(i));
-		}
+//		for(int i = 3; i<=100; i++){
+//			scenario.getPopulation().removePerson(Id.createPersonId(i));
+//		}
 
 		Controler controler = new Controler( scenario ) ;
 
@@ -74,8 +77,24 @@ public class RunWithEvs2 {
 			}
 		});
 
+		//EV Module
 		EvModule evModule = new EvModule();
 		controler.addOverridingModule(evModule);
+
+		//default EV modules to add
+		controler.addOverridingModule(new AbstractModule() {
+			@Override
+			public void install() {
+				addRoutingModuleBinding(TransportMode.car).toProvider(new EvNetworkRoutingProvider(TransportMode.car));
+				installQSimModule(new AbstractQSimModule() {
+					@Override
+					protected void configureQSim() {
+						bind(VehicleChargingHandler.class).asEagerSingleton();
+						addMobsimScopeEventHandlerBinding().to(VehicleChargingHandler.class);
+					}
+				});
+			}
+		});
 		controler.configureQSimComponents(components -> components.addNamedComponent(EvModule.EV_COMPONENT));
 
 		//Event handler for getting EVs SoC
@@ -88,18 +107,8 @@ public class RunWithEvs2 {
 		});
 
 
-		//Adding EmptyBatteryEvents in the simulation
-		//Problem with access to ElectricFleet => probably have to be done in a QSim module
-//		controler.addOverridingModule(new AbstractModule() {
-//			@Override
-//			public void install() {
-//				bind(EmptyBatteryEventGenerator.class).asEagerSingleton();
-//			}
-//		});
-
-
 		//adding EmptyBatteryEvents in the simulation.
-		//Have to be done in a QSimModule because EV battery SoC are needed
+		//Have to be done in a QSimModule and not simply in an AbstractModule because EV battery SoC are needed
 		controler.addOverridingQSimModule(new AbstractQSimModule() {
 			@Override
 			protected void configureQSim() {
