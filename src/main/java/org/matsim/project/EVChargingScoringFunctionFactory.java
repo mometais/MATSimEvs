@@ -61,30 +61,5 @@ public class EVChargingScoringFunctionFactory implements ScoringFunctionFactory 
         }
     }
 
-    private class EmptyBatteryEvent extends  Event implements HasPersonId, HasVehicleId {
 
-        private Id<Person> personId;
-        private Id<Vehicle> vehicleId;
-
-        public EmptyBatteryEvent(double time, Id<Person> personId, Id<Vehicle> vehicleId) {
-            super(time);
-            this.personId = personId;
-            this.vehicleId = vehicleId;
-        }
-
-        @Override
-        public String getEventType() {
-            return "emptyBattery";
-        }
-
-        @Override
-        public Id<Person> getPersonId() {
-            return personId;
-        }
-
-        @Override
-        public Id<Vehicle> getVehicleId() {
-            return vehicleId ;
-        }
-    }
 }

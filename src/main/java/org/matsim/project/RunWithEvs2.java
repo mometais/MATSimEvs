@@ -62,6 +62,14 @@ public class RunWithEvs2 {
 
 		Controler controler = new Controler( scenario ) ;
 
+		//Adding EmptyBatteryEvents in the simulation
+//		controler.addOverridingModule(new AbstractModule() {
+//			@Override
+//			public void install() {
+//				bind(EmptyBatteryEventGenerator.class).asEagerSingleton();
+//			}
+//		});
+
 		//Scoring function for EV charging
 		controler.addOverridingModule(new AbstractModule() {
 			@Override
@@ -77,9 +85,12 @@ public class RunWithEvs2 {
 		controler.addOverridingQSimModule(new AbstractQSimModule() {
 			@Override
 			protected void configureQSim() {
+
+
 //				addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
 				if (controler.getIterationNumber() == config.controler().getLastIteration()){
 					addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
+					addMobsimScopeEventHandlerBinding().to(EmptyBatteryEventGenerator.class);
 				}
 
 			}
