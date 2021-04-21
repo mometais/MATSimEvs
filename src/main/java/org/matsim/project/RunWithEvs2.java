@@ -55,22 +55,16 @@ public class RunWithEvs2 {
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
-
-//		//reduction of the number of agents in the simulation
+		//reduction of the number of agents in the simulation (to go faster in the tests)
 		for(int i = 3; i<=100; i++){
 			scenario.getPopulation().removePerson(Id.createPersonId(i));
 		}
 
 		Controler controler = new Controler( scenario ) ;
 
-		//Adding EmptyBatteryEvents in the simulation
-		//Problem with access to ElectricFleet => probably have to be done in a QSim module
-//		controler.addOverridingModule(new AbstractModule() {
-//			@Override
-//			public void install() {
-//				bind(EmptyBatteryEventGenerator.class).asEagerSingleton();
-//			}
-//		});
+		//###############################################
+		//###Additional modules added to the controler###
+		//###############################################
 
 		//Scoring function for EV charging
 		controler.addOverridingModule(new AbstractModule() {
@@ -83,27 +77,40 @@ public class RunWithEvs2 {
 		EvModule evModule = new EvModule();
 		controler.addOverridingModule(evModule);
 		controler.configureQSimComponents(components -> components.addNamedComponent(EvModule.EV_COMPONENT));
-		
+
+		//Event handler for getting EVs SoC
 		controler.addOverridingQSimModule(new AbstractQSimModule() {
 			@Override
 			protected void configureQSim() {
-				//adding EmptyBatteryEvents in the simulation.
-				//Have to be done in a QSimModule because EV battery SoC are needed
-//				addMobsimScopeEventHandlerBinding().to(EmptyBatteryEventGenerator.class);
-
 				addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
-
-				if (controler.getIterationNumber() == config.controler().getLastIteration()){
-//					addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
-//					addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
-
-				}
-
+//				addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
 			}
 		});
+
+
+		//Adding EmptyBatteryEvents in the simulation
+		//Problem with access to ElectricFleet => probably have to be done in a QSim module
+//		controler.addOverridingModule(new AbstractModule() {
+//			@Override
+//			public void install() {
+//				bind(EmptyBatteryEventGenerator.class).asEagerSingleton();
+//			}
+//		});
+
+
+		//adding EmptyBatteryEvents in the simulation.
+		//Have to be done in a QSimModule because EV battery SoC are needed
+		controler.addOverridingQSimModule(new AbstractQSimModule() {
+			@Override
+			protected void configureQSim() {
+				addMobsimScopeEventHandlerBinding().to(EmptyBatteryEventGenerator.class);
+			}
+		});
+
+
 		
 		controler.run();
-//		ElectricHandlerWithFileWriter.fileWriter(outputDirectory);
+
 	}
 	
 }

@@ -46,7 +46,7 @@ public class EVChargingScoringFunctionFactory implements ScoringFunctionFactory 
         @Override
         public void handleEvent(Event event) {
             if(event instanceof EmptyBatteryEvent/* a battery is empty*/){
-                score  -= 1000;
+                score  -= 100;
             }
         }
 

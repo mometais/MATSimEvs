@@ -121,7 +121,7 @@ public class ElectricHandlerWithFileWriter
         String soc = directory+"/soc_by_locations.csv";
         String stopCount = directory+"/parking_events_by_location.csv";
 
-        System.err.println("#########\n#########\n#########\n fileWriter called \n#########\n#########\n#########");
+        System.err.println("EV data file writer called");
 //        System.err.println(parkingDurationMap.toString());
 
         CompactCSVWriter writerParkingDuration = new CompactCSVWriter(IOUtils.getBufferedWriter(parkingDuration));
@@ -153,10 +153,12 @@ public class ElectricHandlerWithFileWriter
 
     @Override
     public void cleanupAfterMobsim(int iteration) {
+        //if this is the last iteration, create the wanted data files
         if (config.controler().getLastIteration() == iteration){
             fileWriter(config.controler().getOutputDirectory());
         }
 
+        //reinitialization of handler's data
         parkingDurationMap.clear();
         socMap.clear();
         stopCounterMap.clear();
