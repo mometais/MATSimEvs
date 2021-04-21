@@ -41,7 +41,8 @@ public class RunWithEvs2 {
 		String configFile = "scenarios/equil/config.xml";
 		Config config = ConfigUtils.loadConfig(configFile);
 
-		config.controler().setOutputDirectory("output");
+		String outputDirectory = "output";
+		config.controler().setOutputDirectory(outputDirectory);
 		config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
 		config.controler().setLastIteration(5);
 
@@ -63,6 +64,7 @@ public class RunWithEvs2 {
 		Controler controler = new Controler( scenario ) ;
 
 		//Adding EmptyBatteryEvents in the simulation
+		//Problem with access to ElectricFleet => probably have to be done in a QSim module
 //		controler.addOverridingModule(new AbstractModule() {
 //			@Override
 //			public void install() {
@@ -85,19 +87,23 @@ public class RunWithEvs2 {
 		controler.addOverridingQSimModule(new AbstractQSimModule() {
 			@Override
 			protected void configureQSim() {
+				//adding EmptyBatteryEvents in the simulation.
+				//Have to be done in a QSimModule because EV battery SoC are needed
+//				addMobsimScopeEventHandlerBinding().to(EmptyBatteryEventGenerator.class);
 
+				addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
 
-//				addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
 				if (controler.getIterationNumber() == config.controler().getLastIteration()){
-					addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
-					addMobsimScopeEventHandlerBinding().to(EmptyBatteryEventGenerator.class);
+//					addMobsimScopeEventHandlerBinding().to(MyElectricHandler.class);
+//					addMobsimScopeEventHandlerBinding().to(ElectricHandlerWithFileWriter.class);
+
 				}
 
 			}
 		});
 		
 		controler.run();
-		ElectricHandlerWithFileWriter.fileWriter("output");
+//		ElectricHandlerWithFileWriter.fileWriter(outputDirectory);
 	}
 	
 }

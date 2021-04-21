@@ -13,6 +13,7 @@ import org.matsim.contrib.ev.fleet.ElectricFleet;
 import org.matsim.contrib.ev.fleet.ElectricVehicle;
 import org.matsim.contrib.util.CSVLineBuilder;
 import org.matsim.contrib.util.CompactCSVWriter;
+import org.matsim.core.config.Config;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.events.MobsimScopeEventHandler;
 import org.matsim.core.utils.io.IOUtils;
@@ -109,16 +110,16 @@ public class ElectricHandlerWithFileWriter
             double parkingDuration = startTime - stopTime;
             parkingDurationMap.putIfAbsent(linkId, new ArrayList<>());
             parkingDurationMap.get(linkId).add(parkingDuration);
-            System.err.println("Vehicle "+vehicleId + " re-enters traffic after a stop of " + parkingDuration+"s");
+            System.err.println("Vehicle "+vehicleId + " re-enters traffic at "+ startTime+" after a stop of " + parkingDuration+"s");
         } else {
-            System.err.println("First entry in traffic for vehicle "+ vehicleId);
+            System.err.println("First entry in traffic for vehicle "+ vehicleId + " at " + startTime);
         }
     }
 
     public static void fileWriter(String directory){
-        String parkingDuration = "parking_duration_by_locations.csv";
-        String soc = "soc_by_locations.csv";
-        String stopCount = "parking_events_by_location.csv";
+        String parkingDuration = directory+"/parking_duration_by_locations.csv";
+        String soc = directory+"/soc_by_locations.csv";
+        String stopCount = directory+"/parking_events_by_location.csv";
 
         System.err.println("#########\n#########\n#########\n fileWriter called \n#########\n#########\n#########");
 //        System.err.println(parkingDurationMap.toString());
@@ -146,11 +147,20 @@ public class ElectricHandlerWithFileWriter
             writerStopCounter.writeNext(builder);
         }
         writerStopCounter.close();
+    }
 
+    @Inject public Config config;
 
+    @Override
+    public void cleanupAfterMobsim(int iteration) {
+        if (config.controler().getLastIteration() == iteration){
+            fileWriter(config.controler().getOutputDirectory());
+        }
 
-
-
+        parkingDurationMap.clear();
+        socMap.clear();
+        stopCounterMap.clear();
+        stopTimeMap.clear();
 
     }
 }
