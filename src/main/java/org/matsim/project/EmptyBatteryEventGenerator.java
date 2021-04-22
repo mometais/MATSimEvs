@@ -21,7 +21,8 @@ import org.matsim.vehicles.Vehicle;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EmptyBatteryEventGenerator implements LinkEnterEventHandler, LinkLeaveEventHandler, PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler, MobsimScopeEventHandler {
+public class EmptyBatteryEventGenerator
+        implements LinkEnterEventHandler, LinkLeaveEventHandler, PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler, MobsimScopeEventHandler {
 
 //    private EventsManager eventsManager;
     private Map<Id<Vehicle>, Id<Person>> vehicleToDriver = new HashMap<>();
@@ -59,7 +60,7 @@ public class EmptyBatteryEventGenerator implements LinkEnterEventHandler, LinkLe
                Id<Person> personId = vehicleToDriver.get(linkEnterEvent.getVehicleId());
                Id<Link> linkId = linkEnterEvent.getLinkId();
                eventsManager.processEvent(new EmptyBatteryEvent(time, personId,vehicleId, linkId )); //EmptyBatteryEvent generated
-               System.err.println("EV n°" + vehicleId.toString() +" has is battery empty");
+               System.err.println("EV n°" + vehicleId.toString() +" has his battery empty");
            }
         }
     }

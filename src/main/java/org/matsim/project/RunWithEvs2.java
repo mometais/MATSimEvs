@@ -47,12 +47,12 @@ public class RunWithEvs2 {
 		String outputDirectory = "output";
 		config.controler().setOutputDirectory(outputDirectory);
 		config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
-		config.controler().setLastIteration(20);
+		config.controler().setLastIteration(5);
 
 
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
-		evConfigGroup.setChargersFile("../../scenarios/equil/chargers.xml");
-		evConfigGroup.setVehiclesFile("../../scenarios/equil/evs.xml");
+		evConfigGroup.setChargersFile("../../scenarios/equil/testChargers.xml");
+		evConfigGroup.setVehiclesFile("../../scenarios/equil/testEvs.xml");
 		evConfigGroup.setTimeProfiles(true);
 		config.addModule(evConfigGroup);
 
