@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.other;
 
 import org.matsim.contrib.util.CSVLineBuilder;
 import org.matsim.contrib.util.CompactCSVWriter;

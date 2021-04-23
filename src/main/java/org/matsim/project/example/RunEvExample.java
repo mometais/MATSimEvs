@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.example;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

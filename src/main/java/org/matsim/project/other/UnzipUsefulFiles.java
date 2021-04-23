@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.other;
 
 import java.io.IOException;
 import java.util.zip.ZipException;

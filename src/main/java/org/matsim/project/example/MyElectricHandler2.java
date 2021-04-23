@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.example;
 
 
 import com.google.inject.Inject;
@@ -11,7 +11,7 @@ import org.matsim.contrib.ev.fleet.ElectricVehicle;
 
 //import javax.inject.Inject;
 
-public class MyEventHandler2 implements VehicleLeavesTrafficEventHandler {
+public class MyElectricHandler2 implements VehicleLeavesTrafficEventHandler {
         @Inject
         ElectricFleet electricFleet;
 
