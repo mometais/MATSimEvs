@@ -33,6 +33,7 @@ import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.project.other.RandomPlanGenerator;
 
 /**
  * @author nagel
@@ -48,6 +49,7 @@ public class RunWithEvs2 {
 		config.controler().setOutputDirectory(outputDirectory);
 		config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
 		config.controler().setLastIteration(5);
+		config.network().setInputFile("brandenburg-motorways.xml.gz");
 
 
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
@@ -62,6 +64,7 @@ public class RunWithEvs2 {
 //		for(int i = 3; i<=100; i++){
 //			scenario.getPopulation().removePerson(Id.createPersonId(i));
 //		}
+		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 10, scenario.getNetwork(),true);
 
 		Controler controler = new Controler( scenario ) ;
 
