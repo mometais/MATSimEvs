@@ -17,6 +17,8 @@ hs_err_pid*
 /output/
 /bin/
 /RunWithEvs1/
+/outputTestDirectory/
+/outputTestDirectoryOriginalExample/
 
 /.idea/
 *.iml
