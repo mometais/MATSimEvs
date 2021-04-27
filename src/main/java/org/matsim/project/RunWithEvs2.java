@@ -24,6 +24,8 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
 import org.matsim.contrib.ev.charging.VehicleChargingHandler;
+import org.matsim.contrib.ev.infrastructure.ChargingInfrastructure;
+import org.matsim.contrib.ev.infrastructure.ChargingInfrastructureModule;
 import org.matsim.contrib.ev.routing.EvNetworkRoutingProvider;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -32,6 +34,7 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.mobsim.qsim.QSim;
+import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.project.other.RandomPlanGenerator;
 
@@ -52,11 +55,14 @@ public class RunWithEvs2 {
 		config.network().setInputFile("brandenburg-motorways.xml.gz");
 
 
+
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
 		evConfigGroup.setChargersFile("../../scenarios/equil/testChargers.xml");
 		evConfigGroup.setVehiclesFile("../../scenarios/equil/testEvs.xml");
 		evConfigGroup.setTimeProfiles(true);
 		config.addModule(evConfigGroup);
+
+
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
@@ -64,7 +70,10 @@ public class RunWithEvs2 {
 //		for(int i = 3; i<=100; i++){
 //			scenario.getPopulation().removePerson(Id.createPersonId(i));
 //		}
+
+		//generate a random population with random plans
 		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 10, scenario.getNetwork(),true);
+
 
 		Controler controler = new Controler( scenario ) ;
 
@@ -84,7 +93,8 @@ public class RunWithEvs2 {
 		EvModule evModule = new EvModule();
 		controler.addOverridingModule(evModule);
 
-		//default EV modules to add
+
+		//default EV modules to add (cf original ev example)
 		controler.addOverridingModule(new AbstractModule() {
 			@Override
 			public void install() {
@@ -110,7 +120,7 @@ public class RunWithEvs2 {
 		});
 
 
-		//adding EmptyBatteryEvents in the simulation.
+		//adding EmptyBatteryEvents in the simulation (to penalize empty battery).
 		//Have to be done in a QSimModule and not simply in an AbstractModule because EV battery SoC are needed
 		controler.addOverridingQSimModule(new AbstractQSimModule() {
 			@Override
@@ -120,9 +130,17 @@ public class RunWithEvs2 {
 		});
 
 
-		
-		controler.run();
+		//writing input plans file to check it if necessary
+		PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());
+		populationWriter.write("input_plans.xml");
 
+
+
+
+
+
+
+		controler.run();
 	}
 	
 }

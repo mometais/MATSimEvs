@@ -7,6 +7,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
+import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.project.other.RandomPlanGenerator;
 
@@ -19,7 +20,8 @@ public class RunBasicMatsim {
         String configFile = "scenarios/equil/config.xml";
         Config config = ConfigUtils.loadConfig(configFile);
 
-        config.controler().setOutputDirectory("outputTestDirectory");
+        String outputDirectory = "outputTestDirectory";
+        config.controler().setOutputDirectory(outputDirectory);
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
         config.controler().setLastIteration(0);
 
@@ -41,6 +43,12 @@ public class RunBasicMatsim {
         RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 10, scenario.getNetwork(),true);
 
         Controler controler = new Controler(scenario);
+
+        PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());
+        populationWriter.write("input_plans.xml");
+
+
+
 
         controler.run();
     }

@@ -1,5 +1,6 @@
 package org.matsim.project.other;
 
+import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.util.CSVLineBuilder;
 import org.matsim.contrib.util.CompactCSVWriter;
 import org.matsim.core.utils.io.IOUtils;
