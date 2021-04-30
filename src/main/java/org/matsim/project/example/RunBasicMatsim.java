@@ -9,6 +9,7 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.project.other.CreateChargerFile;
 import org.matsim.project.other.RandomPlanGenerator;
 
 
@@ -25,9 +26,10 @@ public class RunBasicMatsim {
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
         config.controler().setLastIteration(0);
 
-        config.network().setInputFile("network.xml");
+        String networkFile = "network.xml";
+        config.network().setInputFile(networkFile);
 
-        //added for the activity "other"
+        //new activity "other" added to the simulation (for the random plan generator)
         PlanCalcScoreConfigGroup.ActivityParams params = new PlanCalcScoreConfigGroup.ActivityParams("other");
         params.setTypicalDuration(3600);
         config.planCalcScore().addActivityParams(params);
@@ -40,12 +42,17 @@ public class RunBasicMatsim {
 			scenario.getPopulation().removePerson(Id.createPersonId(i));
 		}
 
+		//plans are replaced by random plans
         RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 10, scenario.getNetwork(),true);
 
         Controler controler = new Controler(scenario);
 
-        PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());
-        populationWriter.write("input_plans.xml");
+        // allows to check plans with which the controler runs
+//        PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());
+//        populationWriter.write("input_plans.xml");
+
+        //create a charger file with a charger at each link (test)
+        CreateChargerFile.createDefaultChargerForAllLinks(scenario.getNetwork(), "testChargerAllLinks.xml");
 
 
 

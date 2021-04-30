@@ -1,0 +1,25 @@
+<!DOCTYPE chargers SYSTEM "http://matsim.org/files/dtd/chargers_v1.dtd">
+
+<chargers>
+	<charger id="charger_100009873_0" link="100009873_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100009873_0_r" link="100009873_0_r" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100009879_0" link="100009879_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100009879_0_r" link="100009879_0_r" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100010039_0" link="100010039_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100010039_0_r" link="100010039_0_r" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100010042_0" link="100010042_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100010042_0_r" link="100010042_0_r" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100283177_0" link="100283177_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100283177_0_r" link="100283177_0_r" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100405009_0" link="100405009_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_10061947_0" link="10061947_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_10061949_0" link="10061949_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_10061950_0" link="10061950_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100833928_0" link="100833928_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100833935_0" link="100833935_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100997845_0" link="100997845_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100997845_0_r" link="100997845_0_r" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100997848_0" link="100997848_0" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_100997848_0_r" link="100997848_0_r" type="default" plug_power="100.0" plug_count="5"/>
+	<charger id="charger_101333243_0" link="101333243_0" type="default" plug_power="100.0" plug_count="5"/>
+</chargers>

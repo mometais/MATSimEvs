@@ -29,6 +29,7 @@ import org.matsim.contrib.ev.infrastructure.ChargingInfrastructureModule;
 import org.matsim.contrib.ev.routing.EvNetworkRoutingProvider;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
@@ -36,32 +37,44 @@ import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.project.other.CreateChargerFile;
 import org.matsim.project.other.RandomPlanGenerator;
 
 /**
  * @author nagel
  *
  */
-public class RunWithEvs2 {
+public class RunWithEvs {
 
 	public static void main(String[] args) {
 		String configFile = "scenarios/equil/config.xml";
 		Config config = ConfigUtils.loadConfig(configFile);
 
-		String outputDirectory = "output";
+//		String outputDirectory = "output";
+		String outputDirectory = "output2";
 		config.controler().setOutputDirectory(outputDirectory);
 		config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
-		config.controler().setLastIteration(5);
+		config.controler().setLastIteration(0);
 		config.network().setInputFile("brandenburg-motorways.xml.gz");
+//		config.plans().setInputFile("examplefiles/plansEvExample.xml");
+
 
 
 
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
-		evConfigGroup.setChargersFile("../../scenarios/equil/testChargers.xml");
-		evConfigGroup.setVehiclesFile("../../scenarios/equil/testEvs.xml");
+//		evConfigGroup.setChargersFile("../../scenarios/equil/testChargers.xml");
+		evConfigGroup.setChargersFile("../../scenarios/equil/testChargerAllLinks.xml");
+		evConfigGroup.setVehiclesFile("../../scenarios/equil/testEvs2.xml");
 		evConfigGroup.setTimeProfiles(true);
+		evConfigGroup.setChargeTimeStep(5);
+		evConfigGroup.setAuxDischargeTimeStep(10);
 		config.addModule(evConfigGroup);
 
+
+		//activity "other" taken into account in the scoring function (generated in the random plans)
+		PlanCalcScoreConfigGroup.ActivityParams params = new PlanCalcScoreConfigGroup.ActivityParams("other");
+		params.setTypicalDuration(3600);
+		config.planCalcScore().addActivityParams(params);
 
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
@@ -71,8 +84,12 @@ public class RunWithEvs2 {
 //			scenario.getPopulation().removePerson(Id.createPersonId(i));
 //		}
 
-		//generate a random population with random plans
-		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 10, scenario.getNetwork(),true);
+		//generate a random population with random plans and add it in the simulation
+		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 15, scenario.getNetwork(),true);
+
+		//writing input plans file to check the random plans generated
+//		PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());
+//		populationWriter.write("input_plans.xml");
 
 
 		Controler controler = new Controler( scenario ) ;
@@ -128,15 +145,6 @@ public class RunWithEvs2 {
 				addMobsimScopeEventHandlerBinding().to(EmptyBatteryEventGenerator.class);
 			}
 		});
-
-
-		//writing input plans file to check it if necessary
-		PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());
-		populationWriter.write("input_plans.xml");
-
-
-
-
 
 
 

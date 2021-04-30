@@ -1,2 +1,0 @@
-ITERATION	avg. Average Leg distance
-0	44776.119402985074	

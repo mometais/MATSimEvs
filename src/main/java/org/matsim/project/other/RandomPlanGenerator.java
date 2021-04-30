@@ -70,7 +70,7 @@ public class RandomPlanGenerator {
         plan.addLeg(populationFactory.createLeg("car"));
 
         //remember to add the activity in the main run
-        if(Math.random() < 0){
+        if(Math.random() < 0.3){
             Activity otherActivity = populationFactory.createActivityFromLinkId("other",otherActivityLink.getId());
             otherActivity.setEndTime(meanLeaveEveningActivityTime+(new Random()).nextGaussian()*10*60);
             plan.addActivity(otherActivity);
