@@ -79,18 +79,18 @@ public class ElectricHandlerWithFileWriter
         }
 
         if(soc !=null){
-            System.err.println("EV "+ vehicleId.toString() + " stops at " + stopTime+
-                    " at the link n°"+ linkId + " with a SoC of " + soc);
+//            System.err.println("EV "+ vehicleId.toString() + " stops at " + stopTime+
+//                    " at the link n°"+ linkId + " with a SoC of " + soc);
         } else {
-            System.err.println("ICEV "+ vehicleId.toString() + " stops at " + stopTime+
-                    " at link n°"+ linkId);
+//            System.err.println("ICEV "+ vehicleId.toString() + " stops at " + stopTime+
+//                    " at link n°"+ linkId);
         }
 
 
     }
 
     public void handleEvent(ChargingStartEvent event){
-        System.err.println("######### Vehicle n°"+event.getVehicleId()+" charging #########");
+//        System.err.println("######### Vehicle n°"+event.getVehicleId()+" charging #########");
     }
 
     @Override
@@ -110,9 +110,9 @@ public class ElectricHandlerWithFileWriter
             double parkingDuration = startTime - stopTime;
             parkingDurationMap.putIfAbsent(linkId, new ArrayList<>());
             parkingDurationMap.get(linkId).add(parkingDuration);
-            System.err.println("Vehicle "+vehicleId + " re-enters traffic at "+ startTime+" after a stop of " + parkingDuration+"s");
+//            System.err.println("Vehicle "+vehicleId + " re-enters traffic at "+ startTime+" after a stop of " + parkingDuration+"s");
         } else {
-            System.err.println("First entry in traffic for vehicle "+ vehicleId + " at " + startTime);
+//            System.err.println("First entry in traffic for vehicle "+ vehicleId + " at " + startTime);
         }
     }
 

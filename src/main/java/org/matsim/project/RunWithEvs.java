@@ -58,6 +58,10 @@ public class RunWithEvs {
 		config.network().setInputFile("brandenburg-motorways.xml.gz");
 //		config.plans().setInputFile("examplefiles/plansEvExample.xml");
 
+//		config.strategy().setMaxAgentPlanMemorySize(0);
+
+		config.qsim().setEndTime(86400*1.5);
+
 
 
 
@@ -85,7 +89,7 @@ public class RunWithEvs {
 //		}
 
 		//generate a random population with random plans and add it in the simulation
-		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 15, scenario.getNetwork(),true);
+		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 15, scenario.getNetwork(), 2,true);
 
 		//writing input plans file to check the random plans generated
 //		PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());

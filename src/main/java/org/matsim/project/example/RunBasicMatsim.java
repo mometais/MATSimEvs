@@ -4,6 +4,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.ConfigWriter;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
@@ -26,8 +27,12 @@ public class RunBasicMatsim {
         config.controler().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
         config.controler().setLastIteration(0);
 
-        String networkFile = "network.xml";
-        config.network().setInputFile(networkFile);
+        config.qsim().setStartTime(0);
+//        config.qsim().
+        config.qsim().setEndTime(86400);
+
+//        String networkFile = "network.xml";
+//        config.network().setInputFile(networkFile);
 
         //new activity "other" added to the simulation (for the random plan generator)
         PlanCalcScoreConfigGroup.ActivityParams params = new PlanCalcScoreConfigGroup.ActivityParams("other");
@@ -38,12 +43,12 @@ public class RunBasicMatsim {
         Scenario scenario = ScenarioUtils.loadScenario(config);
 
         //reduction of the number of agents in the simulation (to go faster in the tests)
-		for(int i = 11; i<=100; i++){
-			scenario.getPopulation().removePerson(Id.createPersonId(i));
-		}
+//		for(int i = 11; i<=100; i++){
+//			scenario.getPopulation().removePerson(Id.createPersonId(i));
+//		}
 
 		//plans are replaced by random plans
-        RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 10, scenario.getNetwork(),true);
+        RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), 10, scenario.getNetwork(), 2,true);
 
         Controler controler = new Controler(scenario);
 
@@ -52,7 +57,13 @@ public class RunBasicMatsim {
 //        populationWriter.write("input_plans.xml");
 
         //create a charger file with a charger at each link (test)
-        CreateChargerFile.createDefaultChargerForAllLinks(scenario.getNetwork(), "testChargerAllLinks.xml");
+//        CreateChargerFile.createDefaultChargerForAllLinks(scenario.getNetwork(), "testChargerAllLinks.xml");
+
+        //write config just before the run
+        ConfigWriter configWriter = new ConfigWriter(config, ConfigWriter.Verbosity.minimal);
+        configWriter.write("input_config.xml");
+
+
 
 
 

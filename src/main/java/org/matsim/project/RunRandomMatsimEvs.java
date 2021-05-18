@@ -45,6 +45,7 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.project.other.CreateChargerFile;
 import org.matsim.project.other.RandomPlanGenerator;
 
+import static org.matsim.project.other.CreateChargerFile.createDefaultChargerForAllLinks;
 import static org.matsim.project.other.CreateChargerFile.createDefaultChargersForNLinks;
 
 /**
@@ -59,16 +60,17 @@ public class RunRandomMatsimEvs {
 
     public static void main(String[] args) {
 
-        int simulationNumber = 3;
+        int simulationNumber = 0;
 
-        String outputDirectory = "output_multiple_simulations/output";
+        String outputDirectory = "output_multiple_simulations1/output";
         int iterationPerScenario = 0;
         String inputNetworkFile = "brandenburg-motorways.xml.gz";
         Network inputNetwork = NetworkUtils.readNetwork("scenarios/equil/"+inputNetworkFile);
-        String inputChargerFile = createDefaultChargersForNLinks(20, inputNetwork, "simulationChargers.xml"  );
-        String inputEvFile = "examplefiles/evFileExample.xml";
-        int populationSize = 15;
-        int simulationDuration = 7;
+        String inputChargerFile = createDefaultChargersForNLinks(200, inputNetwork, "simulationChargers.xml"  );
+//        String inputChargerFile = createDefaultChargerForAllLinks(inputNetwork, "chargerAllLinks.xml");
+        String inputEvFile = "testEvs2.xml";
+        int populationSize = 50;
+        int simulationDuration = 2; //duration of the simulation in days
 
         for(int i = 0; i<= simulationNumber; i++){
             runEvs(outputDirectory+i,  iterationPerScenario,  inputNetworkFile,  inputChargerFile,  inputEvFile,  populationSize,  simulationDuration);
@@ -81,13 +83,23 @@ public class RunRandomMatsimEvs {
     public static void runEvs(String outputDirectory, int iterationPerScenario, String inputNetworkFile,
             String inputChargerFile, String inputEvFile, int populationSize, int simulationDuration){
 
-        String configFile = "scenarios/equil/config.xml";
+//        String configFile = "scenarios/equil/config.xml";
+        String configFile = "scenarios/equil/berlin-v5.5-1pct.output_config_reduced.xml";
         Config config = ConfigUtils.loadConfig(configFile);
 
         config.controler().setOutputDirectory(outputDirectory);
         config.controler().setOverwriteFileSetting( OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists );
         config.controler().setLastIteration(iterationPerScenario);
         config.network().setInputFile(inputNetworkFile);
+
+//        config.planCalcScore().getActivityParams("h").setMinimalDuration(3600*3);
+//        config.planCalcScore().getActivityParams("w").setMinimalDuration(3600*3);
+//        config.planCalcScore().getActivityParams("car charging interaction").setScoringThisActivityAtAll(true);
+
+//        config.planCalcScore().getActivityParams("car interaction").setTypicalDuration(0);
+
+
+        config.qsim().setEndTime(3600*24*simulationDuration);
 
 //        config.plans().setInputFile("../../input_plans.xml");
 
@@ -112,7 +124,7 @@ public class RunRandomMatsimEvs {
 
 
         //generate a random population with random plans and add it in the simulation
-		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), populationSize, scenario.getNetwork(),true);
+		RandomPlanGenerator.createRandomPopulation(scenario.getPopulation(), populationSize, scenario.getNetwork(), simulationDuration, true);
 
         //writing input plans file to check the random plans generated
 //		PopulationWriter populationWriter = new PopulationWriter(scenario.getPopulation());
@@ -170,6 +182,8 @@ public class RunRandomMatsimEvs {
                 addMobsimScopeEventHandlerBinding().to(EmptyBatteryEventGenerator.class);
             }
         });
+
+
 
         controler.run();
     }

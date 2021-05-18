@@ -60,7 +60,7 @@ public class EmptyBatteryEventGenerator
                Id<Person> personId = vehicleToDriver.get(linkEnterEvent.getVehicleId());
                Id<Link> linkId = linkEnterEvent.getLinkId();
                eventsManager.processEvent(new EmptyBatteryEvent(time, personId,vehicleId, linkId )); //EmptyBatteryEvent generated
-               System.err.println("EV n°" + vehicleId.toString() +" has his battery empty");
+//               System.err.println("EV n°" + vehicleId.toString() +" has his battery empty");
            }
         }
     }
