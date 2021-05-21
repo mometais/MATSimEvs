@@ -4,6 +4,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.events.Event;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.contrib.ev.charging.ChargingStartEvent;
 import org.matsim.core.api.internal.HasPersonId;
 import org.matsim.core.api.internal.HasVehicleId;
 import org.matsim.core.population.PopulationUtils;
@@ -37,6 +38,10 @@ public class EVChargingScoringFunctionFactory implements ScoringFunctionFactory 
         sumScoringFunction.addScoringFunction( new PenaltyEmptyBatteryScoring());
 
 
+        //Bonus if charging activity is selected (to delete, just for the tests)
+        sumScoringFunction.addScoringFunction( new ChargingBonusScoring()); // to try if rewarding charging helps
+
+
         return sumScoringFunction;
     }
 
@@ -62,4 +67,24 @@ public class EVChargingScoringFunctionFactory implements ScoringFunctionFactory 
     }
 
 
+    private class ChargingBonusScoring implements SumScoringFunction.ArbitraryEventScoring {
+
+        private double score;
+
+        @Override
+        public void handleEvent(Event event){
+            if(event instanceof ChargingStartEvent){
+                score += 100;
+            }
+        }
+        @Override
+        public void finish() {
+
+        }
+
+        @Override
+        public double getScore() {
+            return score;
+        }
+    }
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE vehicles SYSTEM "http://matsim.org/files/dtd/electric_vehicles_v1.dtd">
+
+<vehicles>
+	<vehicle id="0" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="1" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="2" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="3" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="4" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="5" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="6" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="7" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="8" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="9" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="10" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="11" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="12" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="13" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="14" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="15" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="16" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="17" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="18" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="19" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="20" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="21" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="22" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="23" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="24" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="25" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="26" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="27" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="28" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="29" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="30" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="31" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="32" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="33" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="34" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="35" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="36" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="37" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="38" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="39" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="40" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="41" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="42" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="43" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="44" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="45" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="46" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="47" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="48" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+	<vehicle id="49" battery_capacity="60" initial_soc="60" vehicle_type="defaultVehicleType" charger_types="default"/>
+</vehicles>

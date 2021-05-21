@@ -22,6 +22,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
+import org.matsim.api.core.v01.population.Population;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
 import org.matsim.contrib.ev.charging.VehicleChargingHandler;
@@ -40,12 +41,14 @@ import org.matsim.core.mobsim.qsim.QSim;
 
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
+import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.project.other.CreateChargerFile;
+import org.matsim.project.other.CreateVehicleFile;
 import org.matsim.project.other.RandomPlanGenerator;
 
-import static org.matsim.project.other.CreateChargerFile.createDefaultChargerForAllLinks;
+import static org.matsim.project.other.CreateChargerFile.createDefaultChargersForAllLinks;
 import static org.matsim.project.other.CreateChargerFile.createDefaultChargersForNLinks;
 
 /**
@@ -60,6 +63,9 @@ public class RunRandomMatsimEvs {
 
     public static void main(String[] args) {
 
+        int populationSize = 50;
+        int simulationDuration = 2; //duration of the simulation in days, impossible to go further than 24h ??
+
         int simulationNumber = 0;
 
         String outputDirectory = "output_multiple_simulations1/output";
@@ -68,9 +74,8 @@ public class RunRandomMatsimEvs {
         Network inputNetwork = NetworkUtils.readNetwork("scenarios/equil/"+inputNetworkFile);
         String inputChargerFile = createDefaultChargersForNLinks(200, inputNetwork, "simulationChargers.xml"  );
 //        String inputChargerFile = createDefaultChargerForAllLinks(inputNetwork, "chargerAllLinks.xml");
-        String inputEvFile = "testEvs2.xml";
-        int populationSize = 50;
-        int simulationDuration = 2; //duration of the simulation in days
+        String inputEvFile = CreateVehicleFile.createAllDefaultVehicleFile(populationSize, "simulationEvs.xml");
+
 
         for(int i = 0; i<= simulationNumber; i++){
             runEvs(outputDirectory+i,  iterationPerScenario,  inputNetworkFile,  inputChargerFile,  inputEvFile,  populationSize,  simulationDuration);
@@ -83,8 +88,8 @@ public class RunRandomMatsimEvs {
     public static void runEvs(String outputDirectory, int iterationPerScenario, String inputNetworkFile,
             String inputChargerFile, String inputEvFile, int populationSize, int simulationDuration){
 
-//        String configFile = "scenarios/equil/config.xml";
-        String configFile = "scenarios/equil/berlin-v5.5-1pct.output_config_reduced.xml";
+        String configFile = "scenarios/equil/config.xml";
+//        String configFile = "scenarios/equil/berlin-v5.5-1pct.output_config_reduced.xml";
         Config config = ConfigUtils.loadConfig(configFile);
 
         config.controler().setOutputDirectory(outputDirectory);

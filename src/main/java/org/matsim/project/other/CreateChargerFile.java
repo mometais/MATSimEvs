@@ -17,7 +17,7 @@ import static org.matsim.contrib.ev.infrastructure.ImmutableChargerSpecification
 
 public class CreateChargerFile {
 
-    public static String createDefaultChargerForAllLinks(Network network, String fileName){
+    public static String createDefaultChargersForAllLinks(Network network, String fileName){
         /*
         Create a charger file with a default charger at each link of the given network
          */

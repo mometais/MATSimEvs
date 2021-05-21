@@ -90,7 +90,7 @@ public class ElectricHandlerWithFileWriter
     }
 
     public void handleEvent(ChargingStartEvent event){
-//        System.err.println("######### Vehicle n°"+event.getVehicleId()+" charging #########");
+        System.err.println("######### Vehicle n°"+event.getVehicleId()+" charging #########");
     }
 
     @Override
