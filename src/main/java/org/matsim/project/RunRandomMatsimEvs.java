@@ -18,16 +18,12 @@
  * *********************************************************************** */
 package org.matsim.project;
 
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Population;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
 import org.matsim.contrib.ev.charging.VehicleChargingHandler;
-import org.matsim.contrib.ev.infrastructure.ChargingInfrastructure;
-import org.matsim.contrib.ev.infrastructure.ChargingInfrastructureModule;
 import org.matsim.contrib.ev.routing.EvNetworkRoutingProvider;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -36,19 +32,14 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
-import org.matsim.core.mobsim.qsim.QSim;
 
 
 import org.matsim.core.network.NetworkUtils;
-import org.matsim.core.network.io.MatsimNetworkReader;
-import org.matsim.core.population.PopulationUtils;
-import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.project.other.CreateChargerFile;
+import org.matsim.project.handlers.ElectricHandlerWithFileWriter;
 import org.matsim.project.other.CreateVehicleFile;
 import org.matsim.project.other.RandomPlanGenerator;
 
-import static org.matsim.project.other.CreateChargerFile.createDefaultChargersForAllLinks;
 import static org.matsim.project.other.CreateChargerFile.createDefaultChargersForNLinks;
 
 /**
@@ -63,13 +54,13 @@ public class RunRandomMatsimEvs {
 
     public static void main(String[] args) {
 
-        int populationSize = 50;
+        int populationSize = 20000;
         int simulationDuration = 2; //duration of the simulation in days, impossible to go further than 24h ??
 
         int simulationNumber = 0;
 
         String outputDirectory = "output_multiple_simulations1/output";
-        int iterationPerScenario = 0;
+        int iterationPerScenario = 10;
         String inputNetworkFile = "brandenburg-motorways.xml.gz";
         Network inputNetwork = NetworkUtils.readNetwork("scenarios/equil/"+inputNetworkFile);
         String inputChargerFile = createDefaultChargersForNLinks(200, inputNetwork, "simulationChargers.xml"  );

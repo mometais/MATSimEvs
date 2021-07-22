@@ -18,14 +18,11 @@
  * *********************************************************************** */
 package org.matsim.project;
 
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
 import org.matsim.contrib.ev.charging.VehicleChargingHandler;
-import org.matsim.contrib.ev.infrastructure.ChargingInfrastructure;
-import org.matsim.contrib.ev.infrastructure.ChargingInfrastructureModule;
 import org.matsim.contrib.ev.routing.EvNetworkRoutingProvider;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -34,10 +31,8 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
-import org.matsim.core.mobsim.qsim.QSim;
-import org.matsim.core.population.io.PopulationWriter;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.project.other.CreateChargerFile;
+import org.matsim.project.handlers.ElectricHandlerWithFileWriter;
 import org.matsim.project.other.RandomPlanGenerator;
 
 /**
@@ -66,9 +61,9 @@ public class RunWithEvs {
 
 
 		EvConfigGroup evConfigGroup = new EvConfigGroup();
-//		evConfigGroup.setChargersFile("../../scenarios/equil/testChargers.xml");
-		evConfigGroup.setChargersFile("../../scenarios/equil/testChargerAllLinks.xml");
-		evConfigGroup.setVehiclesFile("../../scenarios/equil/testEvs2.xml");
+		evConfigGroup.setChargersFile("../../scenarios/equil/testChargers.xml");
+//		evConfigGroup.setChargersFile("../../scenarios/equil/testChargerAllLinks.xml");
+		evConfigGroup.setVehiclesFile("../../scenarios/equil/testEvs.xml");
 		evConfigGroup.setTimeProfiles(true);
 		evConfigGroup.setChargeTimeStep(5);
 		evConfigGroup.setAuxDischargeTimeStep(10);

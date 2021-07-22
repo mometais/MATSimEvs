@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.handlers;
 
 import com.google.inject.Inject;
 import org.matsim.api.core.v01.Id;

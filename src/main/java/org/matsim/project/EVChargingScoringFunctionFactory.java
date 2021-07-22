@@ -29,12 +29,11 @@ public class EVChargingScoringFunctionFactory implements ScoringFunctionFactory 
         // default MATSim scoring
         final ScoringParameters params = new ScoringParameters.Builder(scenario, person).build();
         sumScoringFunction.addScoringFunction(new CharyparNagelActivityScoring(params));
-        sumScoringFunction.addScoringFunction(new CharyparNagelLegScoring(params, scenario.getNetwork()));
+        sumScoringFunction.addScoringFunction(new CharyparNagelLegScoring(params, scenario.getNetwork())); //tried to delete this to see if they charge when they don't mind how much time they travel, the answer is no
         sumScoringFunction.addScoringFunction(new CharyparNagelMoneyScoring(params));
         sumScoringFunction.addScoringFunction(new CharyparNagelAgentStuckScoring(params));
 
-        // EV discharged scoring
-        // "if electric vehicle" condition to add
+        // EV discharged scoring : penalty if vehicle is discharged
         sumScoringFunction.addScoringFunction( new PenaltyEmptyBatteryScoring());
 
 

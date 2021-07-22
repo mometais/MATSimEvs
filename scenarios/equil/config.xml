@@ -51,7 +51,7 @@
 		<param name="activityOpeningTime_1"     value="07:00:00" />
 		<param name="activityLatestStartTime_1" value="09:00:00" />
 		<param name="activityEarliestEndTime_1" value="" />
-		<param name="activityClosingTime_1"     value="48:00:00" />
+		<param name="activityClosingTime_1"     value="24:00:00" />
 
 		<parameterset type="activityParams">
 			<param name="activityType" value="car charging interaction"/>

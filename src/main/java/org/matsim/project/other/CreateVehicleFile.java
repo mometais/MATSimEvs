@@ -59,8 +59,8 @@ public class CreateVehicleFile {
     public static String createAllDefaultVehicleFile(Population population, String filename) throws InterruptedException {
         //create an EV for all the persons in the simulation
         int nbVehicles = population.getPersons().size();
-        System.err.println(nbVehicles);
-        Thread.sleep(1000);
+//        System.err.println(nbVehicles);
+//        Thread.sleep(1000);
 //        int nbVehicles = 5;
 
         ArrayList vehicleSpecifications = new ArrayList();
@@ -113,7 +113,7 @@ public class CreateVehicleFile {
             builder.initialSoc(defaultInitialSoc);
 
             ElectricVehicleSpecification specification = builder.build();
-            System.out.println(specification.getBatteryCapacity());
+//            System.out.println(specification.getBatteryCapacity());
 
             vehicleSpecifications.add(specification);
         }

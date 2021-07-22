@@ -5,6 +5,7 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.api.core.v01.population.*;
+import org.matsim.core.router.RoutingModule;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,6 +13,7 @@ import java.util.Random;
 public class RandomPlanGenerator {
 
     static PopulationFactory populationFactory;
+
 
 
     public static Population createRandomPopulation(Population population, int populationSize, Network network, int durationInDay, Boolean reinitializePopulation){
@@ -75,14 +77,36 @@ public class RandomPlanGenerator {
 
             plan.addLeg(populationFactory.createLeg("car"));
 
+            if (Math.random() < 0.3){
+                Activity backHomeAtNoon = populationFactory.createActivityFromLinkId("h",homeLink.getId());
+                backHomeAtNoon.setEndTime(startTime + 12*60*60 +(new Random()).nextGaussian()*10*60);
+                plan.addActivity(backHomeAtNoon);
+
+                plan.addLeg(populationFactory.createLeg("car"));
+
+                Activity backToWork = populationFactory.createActivityFromLinkId("w",workLink.getId());
+                backToWork.setEndTime(startTime + 14*60*60 +(new Random()).nextGaussian()*10*60);
+                plan.addActivity(backToWork);
+
+                plan.addLeg(populationFactory.createLeg("car"));
+            }
+
             //remember to add the activity in the main run
-            if(Math.random() < 0){
+            if(Math.random() < 0.3){
                 Activity otherActivity = populationFactory.createActivityFromLinkId("other",otherActivityLink.getId());
                 otherActivity.setEndTime(startTime + meanLeaveEveningActivityTime+(new Random()).nextGaussian()*10*60);
                 plan.addActivity(otherActivity);
 
                 plan.addLeg(populationFactory.createLeg("car"));
             }
+            else if(Math.random() < 0.3){
+                Activity otherActivity = populationFactory.createActivityFromLinkId("other",otherActivityLink.getId());
+                otherActivity.setEndTime(startTime + 16*60*60 +(new Random()).nextGaussian()*10*60);
+                plan.addActivity(otherActivity);
+
+                plan.addLeg(populationFactory.createLeg("car"));
+            }
+
 
             Activity homeNight = populationFactory.createActivityFromLinkId("h", homeLink.getId());
             plan.addActivity(homeNight);
@@ -92,6 +116,7 @@ public class RandomPlanGenerator {
 
         return plan;
     }
+
 
     public static Link getRandomLink(Network network){
         ArrayList<Link> links = new ArrayList(network.getLinks().values());
