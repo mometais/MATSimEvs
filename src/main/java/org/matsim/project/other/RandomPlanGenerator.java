@@ -99,7 +99,7 @@ public class RandomPlanGenerator {
 
                 plan.addLeg(populationFactory.createLeg("car"));
             }
-            else if(Math.random() < 0.3){
+            else if(Math.random() < 0.45){ //0.45 so the probability of this "other" activity is equal to the previous one
                 Activity otherActivity = populationFactory.createActivityFromLinkId("other",otherActivityLink.getId());
                 otherActivity.setEndTime(startTime + 16*60*60 +(new Random()).nextGaussian()*10*60);
                 plan.addActivity(otherActivity);

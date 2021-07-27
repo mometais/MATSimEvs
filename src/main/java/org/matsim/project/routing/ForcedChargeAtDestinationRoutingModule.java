@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.geotools.util.MapEntry;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -64,7 +65,7 @@ import org.matsim.facilities.Facility;
  * @author jfbischoff
  */
 
-public final class ForcedChargeAtEachLocationEvNetworkRoutingModule implements RoutingModule {
+public final class ForcedChargeAtDestinationRoutingModule implements RoutingModule {
 
     private final String mode;
 
@@ -80,11 +81,11 @@ public final class ForcedChargeAtEachLocationEvNetworkRoutingModule implements R
     private final String vehicleSuffix;
     private final EvConfigGroup evConfigGroup;
 
-    public ForcedChargeAtEachLocationEvNetworkRoutingModule(final String mode, final Network network, RoutingModule delegate,
-                                                            ElectricFleetSpecification electricFleet,
-                                                            ChargingInfrastructureSpecification chargingInfrastructureSpecification, TravelTime travelTime,
-                                                            DriveEnergyConsumption.Factory driveConsumptionFactory, AuxEnergyConsumption.Factory auxConsumptionFactory,
-                                                            EvConfigGroup evConfigGroup) {
+    public ForcedChargeAtDestinationRoutingModule(final String mode, final Network network, RoutingModule delegate,
+                                                  ElectricFleetSpecification electricFleet,
+                                                  ChargingInfrastructureSpecification chargingInfrastructureSpecification, TravelTime travelTime,
+                                                  DriveEnergyConsumption.Factory driveConsumptionFactory, AuxEnergyConsumption.Factory auxConsumptionFactory,
+                                                  EvConfigGroup evConfigGroup) {
         this.travelTime = travelTime;
         Gbl.assertNotNull(network);
         this.delegate = delegate;
@@ -97,16 +98,18 @@ public final class ForcedChargeAtEachLocationEvNetworkRoutingModule implements R
         stageActivityModePrefix = mode + VehicleChargingHandler.CHARGING_IDENTIFIER;
         this.evConfigGroup = evConfigGroup;
         this.vehicleSuffix = mode.equals(TransportMode.car) ? "" : "_" + mode;
-        System.err.println("Calling constructor MyEvNetworkRoutingModule");
+        System.err.println("Calling constructor RoutingModule");
     }
 
     @Override
     public List<? extends PlanElement> calcRoute(final Facility fromFacility, final Facility toFacility,
                                                  final double departureTime, final Person person) {
-        System.err.println("Calling MyEvNetworkRoutingModule.calcRoute");
 
         List<? extends PlanElement> basicRoute = delegate.calcRoute(fromFacility, toFacility, departureTime, person);
         Id<ElectricVehicle> evId = Id.create(person.getId() + vehicleSuffix, ElectricVehicle.class);
+
+        System.err.println("##################");
+        System.err.println("EV "+ evId.toString()+": calcRoute called");
 
         //if not an EV, return the initial route
         if (!electricFleet.getVehicleSpecifications().containsKey(evId)) {
@@ -126,21 +129,14 @@ public final class ForcedChargeAtEachLocationEvNetworkRoutingModule implements R
 //            double capacity = ev.getBatteryCapacity() * (0.8 + random.nextDouble() * 0.18);
             double capacity = ev.getBatteryCapacity() * (0.8 + random.nextDouble() * 0.18);
 
-            System.err.println("##################");
-            System.err.println("Estimated overall consumption: "+ (int)(estimatedOverallConsumption/3600000));
-            System.err.println("capacity: "+(int)(capacity/3600000));
+            System.err.println("EV "+ evId.toString()+": Estimated overall consumption: "+ (int)(estimatedOverallConsumption/3600000));
+            System.err.println("EV "+ evId.toString()+": Total capacity: "+(int)(capacity/3600000));
 
             //estimation of the number of stops necessary to complete the trip
             double numberOfStops = Math.floor(estimatedOverallConsumption / capacity)+1; // /!\, delete the +1 (only here to force the non basic route for tests)
             if (numberOfStops < 1) {
 
-                System.err.println("Basic route returned for EV "+ evId.toString());
-
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+                System.err.println("EV "+ evId.toString()+": Basic route returned");
                 return basicRoute;
 
             } else {
@@ -149,15 +145,35 @@ public final class ForcedChargeAtEachLocationEvNetworkRoutingModule implements R
                 for (Map.Entry<Link, Double> e : estimatedEnergyConsumption.entrySet()) {
                     currentConsumption += e.getValue();
 
+                    if (currentConsumption > capacity) {
+                        stopLocations.add(e.getKey());
+                        currentConsumption = 0;
 
-                    //mandatory charging if a charger on the road
-                    for(Id<Charger> key : chargingInfrastructureSpecification.getChargerSpecifications().keySet()) {
-                        if (e.getKey().getId() == chargingInfrastructureSpecification.getChargerSpecifications().get(key).getLinkId()) {
-                            stopLocations.add(e.getKey());
-                        }
+                        System.err.println("EV "+ evId.toString()+": Stop on the way needed at link " + e.getKey().getId().toString());
+
                     }
 
                 }
+
+                //Mandatory charging at destination
+                Id<Link> destinationId = toFacility.getLinkId();
+                Boolean isChargeAtDestination = false;
+                for(Id<Charger> chargerId : chargingInfrastructureSpecification.getChargerSpecifications().keySet()) {
+                    if (destinationId== chargingInfrastructureSpecification.getChargerSpecifications().get(chargerId).getLinkId()) {
+                        Link destinationLink = network.getLinks().get(destinationId);
+                        stopLocations.add(destinationLink);
+                        isChargeAtDestination = true;
+                        System.err.println("EV "+ evId.toString()+": Charging stop at destination added" );
+                    }
+                }
+                if(!isChargeAtDestination){
+                    System.err.println("EV "+ evId.toString()+": No charger at destination");
+                }
+//                Link destinationLink = network.getLinks().get(destinationId);
+//                stopLocations.add(destinationLink);
+//                System.err.println("Charging stop at destination added" );
+
+
                 List<PlanElement> stagedRoute = new ArrayList<>();
                 Facility lastFrom = fromFacility;
                 double lastArrivaltime = departureTime;
@@ -189,7 +205,7 @@ public final class ForcedChargeAtEachLocationEvNetworkRoutingModule implements R
                             selectedChargerLink.getId(), stageActivityModePrefix);
                     double maxPowerEstimate = Math.min(selectedCharger.getPlugPower(), ev.getBatteryCapacity() / 3.6);
                     double estimatedChargingTime = (ev.getBatteryCapacity() * 1.5) / maxPowerEstimate;
-                    chargeAct.setMaximumDuration(Math.max(evConfigGroup.getMinimumChargeTime(), estimatedChargingTime)/100); // delete /10, for tests only
+                    chargeAct.setMaximumDuration(Math.max(evConfigGroup.getMinimumChargeTime(), estimatedChargingTime));
                     lastArrivaltime += chargeAct.getMaximumDuration().seconds();
                     stagedRoute.add(chargeAct);
                     lastFrom = nexttoFacility;

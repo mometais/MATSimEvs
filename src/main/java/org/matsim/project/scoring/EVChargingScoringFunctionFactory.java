@@ -1,19 +1,14 @@
-package org.matsim.project;
+package org.matsim.project.scoring;
 
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.events.Event;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.contrib.ev.charging.ChargingStartEvent;
-import org.matsim.core.api.internal.HasPersonId;
-import org.matsim.core.api.internal.HasVehicleId;
-import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.scoring.ScoringFunction;
 import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.core.scoring.SumScoringFunction;
 import org.matsim.core.scoring.functions.*;
-import org.matsim.vehicles.Vehicle;
-import org.matsim.vehicles.VehicleUtils;
+import org.matsim.project.events.EmptyBatteryEvent;
 
 public class EVChargingScoringFunctionFactory implements ScoringFunctionFactory {
     private final Scenario scenario;

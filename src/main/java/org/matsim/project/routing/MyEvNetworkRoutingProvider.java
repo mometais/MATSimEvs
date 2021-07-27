@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.routing;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +27,7 @@ import org.matsim.core.router.util.TravelTime;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.matsim.project.routing.ForcedChargeAtEachLocationEvNetworkRoutingModule;
+import org.matsim.project.CurrentRoutingModule;
 
 public class MyEvNetworkRoutingProvider implements Provider<RoutingModule> {
     private static final Logger log = Logger.getLogger(MyEvNetworkRoutingProvider.class);
@@ -132,10 +132,12 @@ public class MyEvNetworkRoutingProvider implements Provider<RoutingModule> {
         if (!plansCalcRouteConfigGroup.getAccessEgressType().equals(AccessEgressType.none)) {
             throw new IllegalArgumentException("Bushwacking is not currently supported by the EV routing module");
         } else {
-            return new ForcedChargeAtEachLocationEvNetworkRoutingModule(mode, filteredNetwork,
+            return new CurrentRoutingModule(mode, filteredNetwork,
                     DefaultRoutingModules.createPureNetworkRouter(mode, populationFactory, filteredNetwork, routeAlgo),
                     electricFleetSpecification, chargingInfrastructureSpecification, travelTime,
                     driveConsumptionFactory, auxConsumptionFactory, EvConfigGroup.get(config));
+
+            //original routing module : EvNetworkRoutingProvider
         }
     }
 }

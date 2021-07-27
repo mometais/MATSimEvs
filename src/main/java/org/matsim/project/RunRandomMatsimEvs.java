@@ -36,9 +36,11 @@ import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.project.events.EmptyBatteryEventGenerator;
 import org.matsim.project.handlers.ElectricHandlerWithFileWriter;
 import org.matsim.project.other.CreateVehicleFile;
 import org.matsim.project.other.RandomPlanGenerator;
+import org.matsim.project.scoring.EVChargingScoringFunctionFactory;
 
 import static org.matsim.project.other.CreateChargerFile.createDefaultChargersForNLinks;
 

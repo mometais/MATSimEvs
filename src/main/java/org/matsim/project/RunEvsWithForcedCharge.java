@@ -5,22 +5,33 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.contrib.ev.EvConfigGroup;
 import org.matsim.contrib.ev.EvModule;
 import org.matsim.contrib.ev.charging.VehicleChargingHandler;
+import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
-import org.matsim.core.controler.AbstractModule;
-import org.matsim.core.controler.Controler;
-import org.matsim.core.controler.OutputDirectoryHierarchy;
+import org.matsim.core.controler.*;
+import org.matsim.core.events.EventsManagerImpl;
 import org.matsim.core.events.handler.EventHandler;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
+import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.project.events.EmptyBatteryEventGenerator;
 import org.matsim.project.handlers.ElectricHandlerWithFileWriter;
 import org.matsim.project.handlers.MyActivityEventHandler;
 import org.matsim.project.other.CreateChargerFile;
 import org.matsim.project.other.CreateVehicleFile;
 import org.matsim.project.other.RandomPlanGenerator;
+import org.matsim.project.routing.MyEvNetworkRoutingProvider;
+import org.matsim.project.scoring.EVChargingScoringFunctionFactory;
+//import org.matsim.contrib.common.util.LoggerUtils;
+
 
 import java.util.*;
+//import java.util.logging.Logger;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 
 import static org.matsim.core.config.ConfigUtils.loadConfig;
 
@@ -42,6 +53,20 @@ public class RunEvsWithForcedCharge {
 
 
     public static void main(String[] args) throws InterruptedException {
+
+        //disable useless loggers
+//        Logger.getRootLogger().setLevel(Level.WARN); //don't work ??
+        Logger log1 = Logger.getLogger( EventsManagerImpl.class ) ;
+        log1.setLevel(Level.WARN);
+        Logger log2 = Logger.getLogger( Injector.class ) ;
+        log2.setLevel(Level.WARN);
+        Logger log3 = Logger.getLogger( ControlerUtils.class ) ;
+        log3.setLevel(Level.WARN);
+        Logger log4 = Logger.getLogger(QSim.class ) ;
+        log4.setLevel(Level.WARN);
+
+
+
 
         String configFile = "scenarios/equil/config.xml";
         String networkFile = "brandenburg-motorways.xml.gz";
@@ -65,7 +90,7 @@ public class RunEvsWithForcedCharge {
         config.network().setInputFile(networkFile);
         config.plans().setInputFile(populationFile);
         config.qsim().setEndTime(durationInDays*24*3600);
-        System.out.println("Simulation end time : "+ config.qsim().getEndTime());
+//        System.out.println("Simulation end time : "+ config.qsim().getEndTime());
 
         PlanCalcScoreConfigGroup.ActivityParams params = new PlanCalcScoreConfigGroup.ActivityParams("other");
         params.setTypicalDuration(3600);
@@ -84,7 +109,7 @@ public class RunEvsWithForcedCharge {
         EvConfigGroup evConfigGroup = new EvConfigGroup();
         int linkNumber = scenario.getNetwork().getLinks().size();
 //        evConfigGroup.setChargersFile(CreateChargerFile.createDefaultChargersForNLinks((int) (scenario.getNetwork().getLinks().size() / 10), scenario.getNetwork(), chargerFile));
-        evConfigGroup.setChargersFile(CreateChargerFile.createDefaultChargersForNLinks((int) (linkNumber/10), scenario.getNetwork(), chargerFile));
+        evConfigGroup.setChargersFile(CreateChargerFile.createDefaultChargersForNLinks((int) (linkNumber/3), scenario.getNetwork(), chargerFile));
         evConfigGroup.setVehiclesFile(CreateVehicleFile.createAllDefaultVehicleFile(populationSize, evFile));
         evConfigGroup.setTimeProfiles(true);
         config.addModule(evConfigGroup);
@@ -249,13 +274,7 @@ public class RunEvsWithForcedCharge {
         });
 
 
-
-
         controler.run();
-
-
-
-
 
 
     }

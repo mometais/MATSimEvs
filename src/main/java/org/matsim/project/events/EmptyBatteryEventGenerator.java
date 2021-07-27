@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.events;
 
 import com.google.inject.Inject;
 import org.matsim.api.core.v01.Id;
@@ -41,7 +41,7 @@ public class EmptyBatteryEventGenerator
     2021-04-21T16:05:55,265 ERROR MatsimRuntimeModifications:84 Shutdown possibly caused by the following Exception:
     java.lang.IllegalStateException: This handler should have been unregistered on AfterMobsimEvent
 
-    So there is no constructur, and it is simply replaced by an injection of the eventManager (see the line above this commented block)
+    So there is no constructor, and it is simply replaced by an injection of the eventManager (see the line above this commented block)
     */
 //    @Inject
 //    public EmptyBatteryEventGenerator(EventsManager eventsManager) {

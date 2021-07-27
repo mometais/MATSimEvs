@@ -32,8 +32,10 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.project.events.EmptyBatteryEventGenerator;
 import org.matsim.project.handlers.ElectricHandlerWithFileWriter;
 import org.matsim.project.other.RandomPlanGenerator;
+import org.matsim.project.scoring.EVChargingScoringFunctionFactory;
 
 /**
  * @author nagel

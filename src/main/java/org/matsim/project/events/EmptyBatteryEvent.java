@@ -1,4 +1,4 @@
-package org.matsim.project;
+package org.matsim.project.events;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.Event;

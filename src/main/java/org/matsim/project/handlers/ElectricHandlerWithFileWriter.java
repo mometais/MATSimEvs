@@ -78,13 +78,13 @@ public class ElectricHandlerWithFileWriter
             socMap.get(linkId).add(soc);
         }
 
-        if(soc !=null){
+//        if(soc !=null){
 //            System.err.println("EV "+ vehicleId.toString() + " stops at " + stopTime+
 //                    " at the link n°"+ linkId + " with a SoC of " + soc);
-        } else {
+//        } else {
 //            System.err.println("ICEV "+ vehicleId.toString() + " stops at " + stopTime+
 //                    " at link n°"+ linkId);
-        }
+//        }
 
 
     }
@@ -111,7 +111,7 @@ public class ElectricHandlerWithFileWriter
             parkingDurationMap.putIfAbsent(linkId, new ArrayList<>());
             parkingDurationMap.get(linkId).add(parkingDuration);
 //            System.err.println("Vehicle "+vehicleId + " re-enters traffic at "+ startTime+" after a stop of " + parkingDuration+"s");
-        } else {
+//        } else {
 //            System.err.println("First entry in traffic for vehicle "+ vehicleId + " at " + startTime);
         }
     }
@@ -122,7 +122,6 @@ public class ElectricHandlerWithFileWriter
         String stopCount = directory+"/parking_events_by_location.csv";
 
         System.err.println("EV data file writer called");
-//        System.err.println(parkingDurationMap.toString());
 
         CompactCSVWriter writerParkingDuration = new CompactCSVWriter(IOUtils.getBufferedWriter(parkingDuration));
         writerParkingDuration.writeNext("locationID[duration1, duration2, ...]");
